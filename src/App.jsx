@@ -17,6 +17,8 @@ function App() {
   const [autoplayBlocked, setAutoplayBlocked] = useState(false)
   const [songIndex, setSongIndex] = useState(0)
 
+  const playCurrent = useRef(false)
+
   useEffect(() => {
     const audio = audioRef.current
     if (audio) {
@@ -28,20 +30,19 @@ function App() {
   }, [])
 
   useEffect(() => {
-    const audio = audioRef.current
-    if (!audio) return
-    const next = () => {
-      const nextIdx = (songIndex + 1) % songs.length
-      setSongIndex(nextIdx)
-      audio.src = songs[nextIdx].src
-      audio.play()
+    if (playCurrent.current && audioRef.current) {
+      audioRef.current.play()
     }
-    audio.addEventListener('ended', next)
-    return () => audio.removeEventListener('ended', next)
   }, [songIndex])
+
+  const handleEnded = () => {
+    playCurrent.current = true
+    setSongIndex((prev) => (prev + 1) % songs.length)
+  }
 
   const startMusic = () => {
     if (audioRef.current && !musicStarted) {
+      playCurrent.current = true
       audioRef.current.play()
       setMusicStarted(true)
       setAutoplayBlocked(false)
@@ -171,7 +172,7 @@ function App() {
 
       {/* Música */}
       <div className="music-area">
-        <audio ref={audioRef} src={songs[songIndex].src} />
+        <audio ref={audioRef} src={songs[songIndex].src} onEnded={handleEnded} />
         {autoplayBlocked && !musicStarted ? (
           <button className="play-btn" onClick={startMusic}>
             <span className="play-btn-icon">▶</span>
