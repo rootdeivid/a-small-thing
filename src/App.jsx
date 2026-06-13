@@ -2,13 +2,20 @@ import { useState, useRef, useEffect } from 'react'
 import './App.css'
 import dorohedoroImg from './assets/Dorohedoro Character Sheet.jfif'
 import rightImg from './assets/and-you-ought-to-tell-me-that-v0-mar9k3b9zlyd1.webp'
-import musicFile from './assets/Peach Pit - Shampoo Bottles (Official Video) - PeachPitVEVO (youtube).mp3'
+import music1 from './assets/Peach Pit - Shampoo Bottles (Official Video) - PeachPitVEVO (youtube).mp3'
+import music2 from './assets/Bruno Major - Nothing (Lyric & Chord Video) - Bruno Major (youtube).mp3'
+
+const songs = [
+  { src: music1, label: 'Peach Pit — Shampoo Bottles' },
+  { src: music2, label: 'Bruno Major — Nothing' },
+]
 
 function App() {
   const [isOpen, setIsOpen] = useState(false)
   const audioRef = useRef(null)
   const [musicStarted, setMusicStarted] = useState(false)
   const [autoplayBlocked, setAutoplayBlocked] = useState(false)
+  const [songIndex, setSongIndex] = useState(0)
 
   useEffect(() => {
     const audio = audioRef.current
@@ -19,6 +26,19 @@ function App() {
         .catch(() => setAutoplayBlocked(true))
     }
   }, [])
+
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio) return
+    const next = () => {
+      const nextIdx = (songIndex + 1) % songs.length
+      setSongIndex(nextIdx)
+      audio.src = songs[nextIdx].src
+      audio.play()
+    }
+    audio.addEventListener('ended', next)
+    return () => audio.removeEventListener('ended', next)
+  }, [songIndex])
 
   const startMusic = () => {
     if (audioRef.current && !musicStarted) {
@@ -151,18 +171,16 @@ function App() {
 
       {/* Música */}
       <div className="music-area">
-        <audio ref={audioRef} loop>
-          <source src={musicFile} type="audio/mpeg" />
-        </audio>
+        <audio ref={audioRef} src={songs[songIndex].src} />
         {autoplayBlocked && !musicStarted ? (
           <button className="play-btn" onClick={startMusic}>
             <span className="play-btn-icon">▶</span>
-            <span className="play-btn-label">MASTER PIECE</span>
+            <span className="play-btn-label">Tocar música</span>
           </button>
         ) : (
           <>
             <div className="music-label">🎵</div>
-            <p className="music-caption">🎧</p>
+            <p className="music-caption">🎧 {songs[songIndex].label}</p>
           </>
         )}
       </div>
