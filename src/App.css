@@ -1,0 +1,586 @@
+/* ─── TEMA JANE AUSTEN ─── */
+
+.app-container {
+  background: linear-gradient(145deg, #fddde6 0%, #fbc4d2 30%, #f5a5b9 60%, #f08da5 100%);
+  font-family: 'Quicksand', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  overflow-x: hidden;
+  position: relative;
+  gap: 2rem;
+}
+
+/* ── Florais flutuantes ── */
+
+.flower {
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+  font-size: 1.8rem;
+  opacity: 0.35;
+  animation-name: floatFlower;
+  animation-duration: 12s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes floatFlower {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-25px) rotate(6deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(-4deg);
+  }
+  75% {
+    transform: translateY(-30px) rotate(5deg);
+  }
+}
+
+/* ── Pétalas caindo ── */
+
+.petal {
+  position: fixed;
+  pointer-events: none;
+  z-index: 1;
+  font-size: 1.1rem;
+  opacity: 0.3;
+  top: -5%;
+  animation: petalFall linear infinite;
+}
+
+@keyframes petalFall {
+  0% {
+    top: -5%;
+    transform: translateX(0) rotate(0deg);
+    opacity: 0.3;
+  }
+  20% {
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateX(30px) rotate(90deg);
+  }
+  80% {
+    opacity: 0.4;
+  }
+  100% {
+    top: 105%;
+    transform: translateX(-20px) rotate(180deg);
+    opacity: 0;
+  }
+}
+
+/* ── Carta ── */
+
+.card-wrapper {
+  perspective: 1800px;
+  width: 560px;
+  max-width: 92vw;
+  height: 680px;
+  cursor: pointer;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  animation: cardFloat 4s ease-in-out infinite;
+}
+
+.card-wrapper.is-open {
+  animation: none;
+}
+
+@keyframes cardFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* ── Página esquerda (fixa, sempre visível) ── */
+
+.page-left {
+  width: 50%;
+  height: 100%;
+  background: #fcf5f0;
+  border-radius: 2rem 0 0 2rem;
+  border: 2px solid #f8d5de;
+  border-right: 1px solid #f0c0ce;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.page-left-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  gap: 0.8rem;
+}
+
+.img-circle {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #d4879e;
+  box-shadow: 0 4px 12px rgba(140, 60, 80, 0.25);
+  flex-shrink: 0;
+}
+
+.img-circle--small {
+  width: 65px;
+  height: 65px;
+  border-width: 2px;
+  margin: 0.3rem 0;
+}
+
+.img-circle-content {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.6);
+  filter: grayscale(1) contrast(1.1);
+  transition: filter 0.5s;
+}
+
+.card-wrapper.is-open .img-circle-content {
+  filter: grayscale(0.5) contrast(1);
+}
+
+.ornament {
+  font-size: 1.2rem;
+  color: #d4879e;
+  opacity: 0.7;
+}
+
+.left-quote {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 0.9rem;
+  color: #a8516a;
+  line-height: 1.5;
+  max-width: 160px;
+}
+
+.left-author {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.8rem;
+  color: #c47a8f;
+  letter-spacing: 1px;
+}
+
+/* ── Página direita (3D flip) ── */
+
+.page-right {
+  width: 50%;
+  height: 100%;
+  transform-origin: left center;
+  transition: transform 1.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transform-style: preserve-3d;
+  flex-shrink: 0;
+}
+
+.card-wrapper.is-open .page-right {
+  transform: rotateY(-180deg);
+}
+
+.page-right-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  border-radius: 0 2rem 2rem 0;
+}
+
+/* Frente: capa */
+.page-front {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  backface-visibility: hidden;
+  border-radius: 0 2rem 2rem 0;
+  background: linear-gradient(160deg, #fce8ee 0%, #f8d5de 40%, #f0b8c8 100%);
+  border: 2px solid #f8d5de;
+  border-left: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Verso: mensagem */
+.page-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  backface-visibility: hidden;
+  border-radius: 0 2rem 2rem 0;
+  background: #fcf5f0;
+  transform: rotateY(180deg);
+  border: 2px solid #f0c0ce;
+  border-left: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Capa (conteúdo) ── */
+
+.cover-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.wax-seal {
+  width: 80px;
+  height: 80px;
+  background: radial-gradient(circle at 35% 35%, #e8737a, #c9405a);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+  box-shadow:
+    0 4px 12px rgba(180, 50, 70, 0.4),
+    inset 0 -3px 6px rgba(0,0,0,0.15),
+    inset 0 3px 6px rgba(255,255,255,0.3);
+  border: 3px solid #c9405a;
+  transition: transform 0.6s ease, box-shadow 0.6s ease;
+}
+
+.card-wrapper.is-open .wax-seal {
+  transform: scale(0.8) rotate(15deg);
+  box-shadow: 0 2px 8px rgba(180, 50, 70, 0.2);
+}
+
+.seal-icon {
+  font-size: 1.8rem;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+}
+
+.cover-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #a83752;
+  letter-spacing: 1px;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.5);
+  margin-bottom: 0.3rem;
+}
+
+.cover-sub {
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.15rem;
+  color: #b85a72;
+  margin-bottom: 0.8rem;
+}
+
+.cover-divider {
+  font-size: 1rem;
+  color: #c47a8f;
+  letter-spacing: 4px;
+  margin-bottom: 1rem;
+}
+
+.cover-hint {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 0.75rem;
+  color: #b8657c;
+  opacity: 0.7;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  animation: hintPulse 2s ease-in-out infinite;
+}
+
+@keyframes hintPulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* Cantos decorativos da capa */
+
+.cover-corner {
+  position: absolute;
+  font-size: 1.3rem;
+  opacity: 0.4;
+  color: #c47a8f;
+}
+
+.cover-corner.tl { top: 12px; left: 14px; }
+.cover-corner.tr { top: 12px; right: 14px; }
+.cover-corner.bl { bottom: 12px; left: 14px; }
+.cover-corner.br { bottom: 12px; right: 14px; }
+
+/* ── Mensagem (verso) ── */
+
+.message-content {
+  padding: 1.8rem 1.5rem;
+  text-align: left;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.message-date {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.8rem;
+  color: #b8657c;
+  letter-spacing: 2px;
+  text-align: center;
+  margin-bottom: 0.3rem;
+}
+
+.message-greeting {
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #a83752;
+  text-align: center;
+  margin-bottom: 0.3rem;
+}
+
+.message-body {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: #5a3d44;
+}
+
+.message-body p {
+  margin-bottom: 0.8rem;
+}
+
+.austen-quote {
+  font-style: italic;
+  color: #a8516a;
+  border-left: 3px solid #d4879e;
+  padding-left: 1rem;
+  margin: 0.8rem 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.dorohedoro-callout {
+  text-align: center;
+  margin: 1rem 0 0.5rem;
+  padding: 0.5rem;
+  border-top: 1px solid #e8c8d0;
+  border-bottom: 1px solid #e8c8d0;
+}
+
+.nikaido {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #a83752;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.kaiman-cite {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.85rem;
+  color: #b8657c;
+  font-style: italic;
+  margin-top: 0.2rem;
+}
+
+.message-signoff {
+  text-align: right;
+  margin-top: 0.5rem;
+  font-family: 'Playfair Display', serif;
+  font-size: 0.95rem;
+  color: #5a3d44;
+}
+
+.signoff-name {
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.3rem;
+  color: #a83752;
+}
+
+.message-heart {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-top: 0.3rem;
+  animation: heartBeat 1.5s ease-in-out infinite;
+}
+
+@keyframes heartBeat {
+  0%, 100% { transform: scale(1); }
+  15% { transform: scale(1.2); }
+  30% { transform: scale(1); }
+  45% { transform: scale(1.15); }
+  60% { transform: scale(1); }
+}
+
+/* ── Player de música ── */
+
+.music-area {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.music-label {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 0.9rem;
+  color: #a8516a;
+  opacity: 0.8;
+}
+
+.play-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(232, 67, 103, 0.9);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 2rem;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(180, 50, 70, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.play-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(180, 50, 70, 0.4);
+}
+
+.play-btn:active {
+  transform: translateY(1px);
+}
+
+.play-btn-icon {
+  font-size: 1rem;
+}
+
+.music-caption {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 0.8rem;
+  color: #b8657c;
+  opacity: 0.7;
+}
+
+/* ── Responsivo ── */
+
+@media (max-width: 500px) {
+  .card-wrapper {
+    height: 560px;
+  }
+
+  .cover-title {
+    font-size: 1.6rem;
+  }
+
+  .cover-sub {
+    font-size: 1rem;
+  }
+
+  .message-greeting {
+    font-size: 1.4rem;
+  }
+
+  .message-body {
+    font-size: 0.75rem;
+  }
+
+  .message-content {
+    padding: 1rem 0.8rem;
+  }
+
+  .left-quote {
+    font-size: 0.8rem;
+    max-width: 120px;
+  }
+
+  .img-circle {
+    width: 100px;
+    height: 100px;
+  }
+
+  .img-circle--small {
+    width: 50px;
+    height: 50px;
+  }
+
+  .left-author {
+    font-size: 0.7rem;
+  }
+
+  .ornament {
+    font-size: 1rem;
+  }
+
+  .wax-seal {
+    width: 60px;
+    height: 60px;
+  }
+
+  .seal-icon {
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 420px) {
+}
+
+@media (max-width: 380px) {
+  .card-wrapper {
+    height: 520px;
+  }
+
+  .cover-title {
+    font-size: 1.3rem;
+  }
+
+  .page-left-content {
+    padding: 1rem 0.5rem;
+    gap: 0.5rem;
+  }
+
+  .left-quote {
+    font-size: 0.7rem;
+    max-width: 90px;
+  }
+
+  .img-circle {
+    width: 80px;
+    height: 80px;
+  }
+
+  .img-circle--small {
+    width: 40px;
+    height: 40px;
+  }
+}
